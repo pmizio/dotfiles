@@ -22,7 +22,8 @@
       - zoxide
       - bat
       - jq
-- name: Install neovim from Homebrew
+      - tmux
+- name: Install NeoVim from Homebrew
   community.general.homebrew:
     name: neovim
     state: head

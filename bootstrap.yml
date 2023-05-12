@@ -12,5 +12,6 @@
       loop:
         - "~/.config/kitty/"
         - "~/.config/fish/"
+        - "~/.tmux/"
     - name: Setup dotfiles
       include_tasks: tasks/dotfiles.yml

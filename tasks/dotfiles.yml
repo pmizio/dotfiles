@@ -19,6 +19,11 @@
         dest: "~/.config/starship.toml",
       }
     - { src: "~/dotfiles/.gitconfig", dest: "~/.gitconfig" }
+    - { src: "~/dotfiles/.tmux.conf", dest: "~/.tmux.conf" }
+- name: Setup tmux plugin manager
+  git:
+    repo: "https://github.com/tmux-plugins/tpm"
+    dest: "~/.tmux/plugins/tpm/"
 - name: Clone NeoVim config
   git:
     repo: "https://github.com/pmizio/reactive.nvim"
