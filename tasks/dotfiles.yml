@@ -1,30 +1,19 @@
 ---
-- name: link dotfiles
+- include_tasks: reusable_link_all_files.yml
+  vars:
+    - src: "~/dotfiles/config/kitty/"
+    - dest: "~/.config/kitty/"
+- include_tasks: reusable_link_all_files.yml
+  vars:
+    - src: "~/dotfiles/config/fish/"
+    - dest: "~/.config/fish/"
+- name: Link dotfiles
   file:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
+    force: true
     state: link
   loop:
-    - {
-        src: "~/dotfiles/config/kitty/kitty.conf",
-        dest: "~/.config/kitty/kitty.conf",
-      }
-    - {
-        src: "~/dotfiles/config/kitty/tokyo-night-kitty.conf",
-        dest: "~/.config/kitty/tokyo-night-kitty.conf",
-      }
-    - {
-        src: "~/dotfiles/config/kitty/nerd-font-config.conf",
-        dest: "~/.config/kitty/nerd-font-config.conf",
-      }
-    - {
-        src: "~/dotfiles/config/kitty/gen-nerd.sh",
-        dest: "~/.config/kitty/gen-nerd.sh",
-      }
-    - {
-        src: "~/dotfiles/config/fish/config.fish",
-        dest: "~/.config/fish/config.fish",
-      }
     - {
         src: "~/dotfiles/config/starship.toml",
         dest: "~/.config/starship.toml",
@@ -32,5 +21,5 @@
     - { src: "~/dotfiles/.gitconfig", dest: "~/.gitconfig" }
 - name: Clone NeoVim config
   git:
-    repo: "https://github.com/pmizio/reactive.nvim.git"
+    repo: "https://github.com/pmizio/reactive.nvim"
     dest: "~/.config/nvim/"

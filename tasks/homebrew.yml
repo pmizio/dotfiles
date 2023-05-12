@@ -16,6 +16,12 @@
       - fnm
       - git
       - gh
+      - fzf
+      - ripgrep
+      - exa
+      - zoxide
+      - bat
+      - jq
 - name: Install neovim from Homebrew
   community.general.homebrew:
     name: neovim
