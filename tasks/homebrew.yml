@@ -1,0 +1,22 @@
+---
+- name: Tap Homebrew repos
+  community.general.homebrew_tap:
+    name: homebrew/cask-fonts
+- name: Install Homebrew cask's
+  community.general.homebrew_cask:
+    name:
+      - kitty
+      - font-fira-code
+      - font-symbols-only-nerd-font
+- name: Install packages from Homebrew
+  community.general.homebrew:
+    name:
+      - fish
+      - starship
+      - fnm
+      - git
+      - gh
+- name: Install neovim from Homebrew
+  community.general.homebrew:
+    name: neovim
+    state: head

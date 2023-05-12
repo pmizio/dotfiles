@@ -1,0 +1,36 @@
+---
+- name: link dotfiles
+  file:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    state: link
+  loop:
+    - {
+        src: "~/dotfiles/config/kitty/kitty.conf",
+        dest: "~/.config/kitty/kitty.conf",
+      }
+    - {
+        src: "~/dotfiles/config/kitty/tokyo-night-kitty.conf",
+        dest: "~/.config/kitty/tokyo-night-kitty.conf",
+      }
+    - {
+        src: "~/dotfiles/config/kitty/nerd-font-config.conf",
+        dest: "~/.config/kitty/nerd-font-config.conf",
+      }
+    - {
+        src: "~/dotfiles/config/kitty/gen-nerd.sh",
+        dest: "~/.config/kitty/gen-nerd.sh",
+      }
+    - {
+        src: "~/dotfiles/config/fish/config.fish",
+        dest: "~/.config/fish/config.fish",
+      }
+    - {
+        src: "~/dotfiles/config/starship.toml",
+        dest: "~/.config/starship.toml",
+      }
+    - { src: "~/dotfiles/.gitconfig", dest: "~/.gitconfig" }
+- name: Clone NeoVim config
+  git:
+    repo: "https://github.com/pmizio/reactive.nvim.git"
+    dest: "~/.config/nvim/"
