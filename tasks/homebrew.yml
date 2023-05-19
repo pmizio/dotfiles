@@ -23,7 +23,10 @@
       - bat
       - jq
       - tmux
+      - htop
 - name: Install NeoVim from Homebrew
   community.general.homebrew:
     name: neovim
     state: head
+- name: Install Rust
+  shell: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
