@@ -1,0 +1,53 @@
+---
+- name: Install packages using apt
+  become: true
+  ansible.builtin.apt:
+    pkg:
+      - curl
+      - build-essential
+      - fish
+      - git
+      - fzf
+      - ripgrep
+      - zoxide
+      - bat
+      - jq
+      - tmux
+- name: Install rust toolchain
+  ansible.builtin.shell: curl --proto "=https" --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+- name: Install fnm
+  ansible.builtin.shell: cargo install fnm
+  environment:
+    PATH: "{{ansible_env.PATH}}:$HOME/.cargo/bin"
+- name: Install rust packages
+  ansible.builtin.shell: |
+    curl -sS https://starship.rs/install.sh | sh -s -- -y
+    cargo install exa
+  environment:
+    path: "{{ansible_env.PATH}}:$HOME/cargo/bin"
+- name: Install NeoVim build dependecies
+  become: true
+  ansible.builtin.apt:
+    pkg:
+      - ninja-build
+      - gettext
+      - cmake
+      - unzip
+- name: Clone NeoVim repo
+  git:
+    repo: "https://github.com/neovim/neovim"
+    dest: "$HOME/.neovim/"
+- name: Build NeoVim
+  ansible.builtin.shell:
+    cmd: |
+      cd $HOME/.neovim/
+      rm -rf build
+      make distclean
+      make CMAKE_BUILD_TYPE=Release
+- name: Install NeoVim
+  become: true
+  ansible.builtin.shell:
+    cmd: |
+      cd "{{lookup('env', 'HOME')}}/.neovim/"
+      make install
+      

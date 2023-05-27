@@ -3,8 +3,8 @@
   become: false
   remote_user: pawel.mizio
   tasks:
-    - name: Homebrew setup
-      include_tasks: tasks/homebrew.yml
+    - name: Install software
+      include_tasks: tasks/install.yml
     - name: Create directories
       file:
         path: "{{item}}"
