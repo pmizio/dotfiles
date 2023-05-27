@@ -1,4 +1,8 @@
 ---
+- name: Set variables
+  ansible.builtin.set_fact:
+    HOME: "{{ lookup('env','HOME') }}"
+    CARGO_PATH: "{{ lookup('env','HOME') }}/.cargo/bin:{{ ansible_env.PATH }}"
 - name: Install packages using apt
   become: true
   ansible.builtin.apt:
@@ -16,46 +20,21 @@
 - name: Download rust installation script
   get_url:
     url: https://sh.rustup.rs
+    dest: "{{ HOME }}"
     mode: a+x
 - name:  Install rust toolchain
-  command: "./rustup-init.sh -y"
+  command: "{{ HOME }}/rustup-init.sh -y"
 - name: Delete rust installation script
   ansible.builtin.file:
-    path: ./rustup-init.sh
+    path: "{{ HOME }}/rustup-init.sh"
     state: absent
 - name: Install packages from cargo
   ansible.builtin.shell: |
     cargo install fnm exa
   environment:
-    PATH: "{{ lookup('env','HOME') }}/.cargo/bin:{{ ansible_env.PATH }}"
+    PATH: "{{ CARGO_PATH }}"
 - name: Install starship prompt
   ansible.builtin.shell: |
     curl -sS https://starship.rs/install.sh | sh -s -- -y
   environment:
-    PATH: "{{ lookup('env','HOME') }}/.cargo/bin:{{ ansible_env.PATH }}"
-- name: Install NeoVim build dependecies
-  become: true
-  ansible.builtin.apt:
-    pkg:
-      - ninja-build
-      - gettext
-      - cmake
-      - unzip
-- name: Clone NeoVim repo
-  git:
-    repo: "https://github.com/neovim/neovim"
-    dest: "$HOME/.neovim/"
-- name: Build NeoVim
-  ansible.builtin.shell:
-    cmd: |
-      cd $HOME/.neovim/
-      rm -rf build
-      make distclean
-      make CMAKE_BUILD_TYPE=Release
-- name: Install NeoVim
-  become: true
-  ansible.builtin.shell:
-    cmd: |
-      cd "{{lookup('env', 'HOME')}}/.neovim/"
-      make install
-      
+    PATH: "{{ CARGO_PATH }}"
