@@ -1,0 +1,36 @@
+---
+- name: Set variables
+  ansible.builtin.set_fact:
+    HOME: "{{ lookup('env','HOME') }}"
+    CARGO_PATH: "{{ lookup('env','HOME') }}/.cargo/bin:{{ ansible_env.PATH }}"
+- name: Install packages using apt
+  become: true
+  ansible.builtin.apt:
+    pkg:
+      - curl
+      - build-essential
+      - fish
+      - git
+      - fzf
+      - ripgrep
+      - zoxide
+      - bat
+      - jq
+      - tmux
+- name: Install Rust
+  ansible.builtin.shell: |
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+  args:
+    warn: false
+- name: Install packages from cargo
+  ansible.builtin.shell: |
+    cargo install fnm exa
+  environment:
+    PATH: "{{ CARGO_PATH }}"
+- name: Install starship prompt
+  ansible.builtin.shell: |
+    curl -sS https://starship.rs/install.sh | sh -s -- -y
+  environment:
+    PATH: "{{ CARGO_PATH }}"
+  args:
+    warn: false
