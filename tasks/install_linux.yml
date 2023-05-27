@@ -17,17 +17,8 @@
       - bat
       - jq
       - tmux
-- name: Download rust installation script
-  get_url:
-    url: https://sh.rustup.rs
-    dest: "{{ HOME }}"
-    mode: a+x
-- name:  Install rust toolchain
-  command: "{{ HOME }}/rustup-init.sh -y"
-- name: Delete rust installation script
-  ansible.builtin.file:
-    path: "{{ HOME }}/rustup-init.sh"
-    state: absent
+- name: Install Rust
+  shell: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 - name: Install packages from cargo
   ansible.builtin.shell: |
     cargo install fnm exa
