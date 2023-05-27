@@ -17,15 +17,14 @@
   ansible.builtin.shell: curl --proto "=https" --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 - name: Install packages from cargo
   ansible.builtin.shell: |
-    cargo install fnm
-    cargo install exa
+    cargo install fnm exa
   environment:
-    PATH: "$HOME/.cargo/bin:{{ansible_env.PATH}}"
+    PATH: "{{ lookup('env','HOME') }}/.cargo/bin:{{ ansible_env.PATH }}"
 - name: Install starship prompt
   ansible.builtin.shell: |
     curl -sS https://starship.rs/install.sh | sh -s -- -y
   environment:
-    PATH: "$HOME/.cargo/bin:{{ansible_env.PATH}}"
+    PATH: "{{ lookup('env','HOME') }}/.cargo/bin:{{ ansible_env.PATH }}"
 - name: Install NeoVim build dependecies
   become: true
   ansible.builtin.apt:
