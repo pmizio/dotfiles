@@ -24,7 +24,7 @@
     warn: false
 - name: Install packages from cargo
   ansible.builtin.shell: |
-    cargo install fnm exa
+    cargo install fnm exa bat
   environment:
     PATH: "{{ CARGO_PATH }}"
 - name: Install starship prompt
