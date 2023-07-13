@@ -24,6 +24,9 @@
       - jq
       - tmux
       - htop
+      - ffmpeg
+      - imagemagick
+      - gifsicle
 - name: Install NeoVim from Homebrew
   community.general.homebrew:
     name: neovim
