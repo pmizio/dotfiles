@@ -3,3 +3,25 @@
 	email = mizio.pawel@gmail.com
 [pull]
 	rebase = false
+[push]
+  default = current
+  autoSetupRemote = true
+[rebase]
+  autosquash = true
+  autostash = true
+[merge]
+  renamelimit = 1000
+  autostash = true
+[alias]
+  c = commit
+  co = checkout
+  s = status
+  default-branch = !git symbolic-ref refs/remotes/origin/HEAD | cut -d'/' -f4
+  plm = "!f(){ git pull origin $(git default-branch) $@;}; f"
+  pl = pull
+  p = push
+  pf = push --force-with-lease
+  l = log
+  lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+  r = rebase
+  f = fetch

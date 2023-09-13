@@ -13,6 +13,7 @@ alias ll="exa -lbF --git"
 alias la="exa -lbhHigUmuSa --time-style=long-iso --git --color-scale"
 
 alias cat="bat"
+alias g=git
 
 function update_nvim
   if test (uname) = Darwin
