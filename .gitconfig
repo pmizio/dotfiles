@@ -27,3 +27,5 @@
   r = rebase
   ri = rebase -i
   f = fetch
+  st = stash
+  stp = stash pop
