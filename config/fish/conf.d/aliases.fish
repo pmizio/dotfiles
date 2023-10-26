@@ -14,11 +14,13 @@ alias la="exa -lbhHigUmuSa --time-style=long-iso --git --color-scale"
 
 alias cat="bat"
 alias g=git
+alias t=tmux
 
 function update_nvim
   if test (uname) = Darwin
     brew uninstall neovim
     brew install neovim --HEAD
+    ln -sfn /usr/local/Cellar/neovim/HEAD-* /usr/local/Cellar/neovim-src
   else
     set from_dir (pwd)
     cd $HOME/.neovim
