@@ -25,6 +25,11 @@ in
     imagemagick
     gifsicle
     neovim # todo: install nightly
+    gcc
+    gnumake
+    lua54Packages.luarocks
+    unzip
+    rustup
   ];
 
   home.file = {
@@ -43,15 +48,19 @@ in
     bash.profileExtra = "exec fish";
     fish = {
       enable = true;
-      interactiveShellInit = "set -g fish_greeting";
+      interactiveShellInit = ''
+        set -g fish_greeting
+        fnm env --use-on-cd | source
+        fish_add_path "$HOME/.cargo/bin/"
+      '';
       functions = {
         nix_switch = {
-	  body = ''
-	    pushd ${flakeDir}
-	    home-manager switch -b backup --flake .#wsl
-	    popd
-	  '';
-	};
+          body = ''
+            pushd ${flakeDir}
+            home-manager switch -b backup --flake .#wsl
+            popd
+          '';
+        };
       };
     };
 

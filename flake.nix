@@ -7,9 +7,13 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    neovim-nightly-overlay = {
+      url = "github:nix-community/neovim-nightly-overlay";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { self, nixpkgs, home-manager }:
+  outputs = { self, nixpkgs, home-manager, ... } @ inputs:
     let
       config = {
         allowUnfree = true;
@@ -20,13 +24,14 @@
           inherit config;
           system = "x86_64-linux";
         };
-	modules = [
-	{
-          home.username = "miziak";
-          home.homeDirectory = "/home/miziak";
-	}
-	./home.nix
-	];
+      	modules = [
+	        {
+            home.username = "miziak";
+            home.homeDirectory = "/home/miziak";
+            # nixpkgs.overlays = [ inputs.neovim-nightly-overlay.overlay ];
+          }
+          ./home.nix
+        ];
       };
     };
 }
