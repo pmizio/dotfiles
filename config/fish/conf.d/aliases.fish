@@ -20,5 +20,6 @@ function update_nvim
   if test (uname) = Darwin
     brew uninstall neovim
     brew install neovim --HEAD
+    ln -sfn /usr/local/Cellar/neovim/HEAD-* /usr/local/Cellar/neovim-src
   end
 end
