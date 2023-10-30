@@ -14,6 +14,7 @@ alias la="eza -lbhHigUmuSa --time-style=long-iso --git --color-scale"
 
 alias cat="bat"
 alias g=git
+alias t=tmux
 
 function update_nvim
   if test (uname) = Darwin
