@@ -1,4 +1,4 @@
-{ config, pkgs, thisFlakePath, ...}:
+{ config, pkgs, ...}:
 
 let
   inherit (config.lib.file) mkOutOfStoreSymlink;
