@@ -7,6 +7,8 @@ brew install ansible
 # run bootstrap playbook
 ansible-playbook bootstrap.yml
 
-# run bootstrap playbook(Linux/WSL)
-ansible-playbook bootstrap.yml -K
+# apply nix flake (Linux/WSL)
+# install nix
+nix run home-manager/master -- init --switch
+home-manager switch -b backup --flake .#wsl
 ```
