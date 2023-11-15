@@ -19,6 +19,7 @@
   s = status
   default-branch = !git symbolic-ref refs/remotes/origin/HEAD | cut -d'/' -f4
   plm = "!f(){ git pull origin $(git default-branch) $@;}; f"
+  plb = "!f(){ git pull origin $(git rev-parse --abbrev-ref HEAD) --rebase $@;}; f"
   pl = pull
   p = push
   pf = push --force-with-lease

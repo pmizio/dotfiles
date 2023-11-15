@@ -8,9 +8,9 @@ end
 
 alias setnode="fnm use (jq -r .engines.node package.json | sed -E 's/[0-9.]+ - //')"
 
-alias ls="exa"
-alias ll="exa -lbF --git"
-alias la="exa -lbhHigUmuSa --time-style=long-iso --git --color-scale"
+alias ls="eza"
+alias ll="eza -lbF --git"
+alias la="eza -lbhHigUmuSa --time-style=long-iso --git --color-scale"
 
 alias cat="bat"
 alias g=git
