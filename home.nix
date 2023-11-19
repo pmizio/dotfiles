@@ -1,0 +1,77 @@
+{ config, pkgs, ...}:
+
+let
+  inherit (config.lib.file) mkOutOfStoreSymlink;
+  
+  flakeDir = "${config.home.homeDirectory}/.dotfiles";
+in
+{
+  programs.home-manager.enable = true;
+  home.stateVersion = "23.05";
+
+  home.packages = with pkgs; [
+    fish
+    fnm
+    git
+    gh
+    fzf
+    ripgrep
+    eza
+    bat
+    jq
+    tmux
+    htop
+    ffmpeg
+    imagemagick
+    gifsicle
+    neovim # todo: install nightly
+    gcc
+    gnumake
+    lua54Packages.luarocks
+    unzip
+    rustup
+  ];
+
+  home.file = {
+    ".gitconfig".source =
+      mkOutOfStoreSymlink "${flakeDir}/.gitconfig";
+    ".tmux.conf".source =
+      mkOutOfStoreSymlink "${flakeDir}/.tmux.conf";
+    ".config/starship.toml".source =
+      mkOutOfStoreSymlink "${flakeDir}/config/starship.toml";
+    ".config/fish/conf.d/aliases.fish".source =
+      mkOutOfStoreSymlink "${flakeDir}/config/fish/conf.d/aliases.fish";
+  };
+
+  programs = {
+    bash.enable = true;
+    bash.profileExtra = ''
+      . $HOME/.nix-profile/etc/profile.d/nix.sh
+      exec fish
+    '';
+    fish = {
+      enable = true;
+      interactiveShellInit = ''
+        source $HOME/.nix-profile/etc/profile.d/nix.fish
+        set -g fish_greeting
+        fnm env --use-on-cd | source
+        fish_add_path "$HOME/.cargo/bin/"
+      '';
+      functions = {
+        nix_switch = {
+          body = ''
+            pushd ${flakeDir}
+            home-manager switch -b backup --flake .#wsl
+            popd
+          '';
+        };
+      };
+    };
+
+    starship.enable = true;
+    starship.enableFishIntegration = true;
+
+    zoxide.enable = true;
+    zoxide.enableFishIntegration = true;
+  };
+}

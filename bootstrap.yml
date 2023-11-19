@@ -3,15 +3,8 @@
   become: false
   remote_user: pawel.mizio
   tasks:
-    - name: Install MacOS software
-      include_tasks: tasks/install_mac.yml
-      when: ansible_facts['os_family'] == "Darwin"
-    - name: Install Linux software
-      include_tasks: tasks/install_linux.yml
-      when: ansible_facts['distribution'] == "Ubuntu"
-    - name: Build Linux software
-      include_tasks: tasks/build_linux.yml
-      when: ansible_facts['distribution'] == "Ubuntu"
+    - name: Install software
+      include_tasks: tasks/install.yml
     - name: Create directories
       file:
         path: "{{item}}"

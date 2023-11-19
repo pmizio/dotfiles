@@ -21,11 +21,5 @@ function update_nvim
     brew uninstall neovim
     brew install neovim --HEAD
     ln -sfn /usr/local/Cellar/neovim/HEAD-* /usr/local/Cellar/neovim-src
-  else
-    set from_dir (pwd)
-    cd $HOME/.neovim
-    make distclean
-    make CMAKE_BUILD_TYPE=Release
-    cd $from_dir
   end
 end
