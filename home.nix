@@ -45,10 +45,14 @@ in
 
   programs = {
     bash.enable = true;
-    bash.profileExtra = "exec fish";
+    bash.profileExtra = ''
+      . $HOME/.nix-profile/etc/profile.d/nix.sh
+      exec fish
+    '';
     fish = {
       enable = true;
       interactiveShellInit = ''
+        source $HOME/.nix-profile/etc/profile.d/nix.fish
         set -g fish_greeting
         fnm env --use-on-cd | source
         fish_add_path "$HOME/.cargo/bin/"
