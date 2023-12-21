@@ -2,6 +2,14 @@
 
 add_newline = false
 
+[character]
+success_symbol = '[I ❯](bold green)'
+error_symbol = '[I ❯](bold red)'
+vimcmd_symbol = '[N ❯](bold green)'
+vimcmd_replace_one_symbol	 = '[S ❯](bold green)'
+vimcmd_replace_symbol	 = '[R ❯](bold green)'
+vimcmd_visual_symbol	 = '[V ❯](bold green)'
+
 [package]
 disabled = true
 
