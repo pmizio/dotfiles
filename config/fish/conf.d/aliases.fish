@@ -16,6 +16,7 @@ alias cat="bat"
 alias g="git"
 alias t="tmux"
 alias ..="cd .."
+alias npv="npm --no-git-tag-version version"
 
 function update_nvim
   if test (uname) = Darwin

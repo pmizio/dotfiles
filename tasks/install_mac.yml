@@ -18,7 +18,7 @@
       - gh
       - fzf
       - ripgrep
-      - exa
+      - eza
       - zoxide
       - bat
       - jq
