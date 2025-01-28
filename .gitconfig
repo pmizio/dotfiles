@@ -1,6 +1,6 @@
 [user]
 	name = Paweł Mizio
-	email = mizio.pawel@gmail.com
+	email = pawel.mizio@allegro.com
 [pull]
 	rebase = false
 [push]
@@ -30,4 +30,8 @@
   f = fetch
   st = stash
   stp = stash pop
+  fdx = clean -fdx
+  cp = cherry-pick
   apr = "!f(){ curl "$@" --silent | git apply;}; f"
+[http]
+	postBuffer = 157286400

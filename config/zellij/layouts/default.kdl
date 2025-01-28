@@ -1,0 +1,30 @@
+layout {
+  default_tab_template {
+    pane size=1 borderless=true {
+      plugin location="file:$HOME/Downloads/zjstatus.was" {
+        format_left   "#[fg=black,bg=blue,bold] {session} {tabs}"
+        format_right  "{mode}{datetime}{command_uptime}"
+        format_space  ""
+
+        border_enabled  "false"
+
+        mode_tmux "#[bg=yellow,fg=black,bold] {name} "
+        mode_resize "#[bg=magenta,fg=black,bold] {name} "
+        mode_move "#[bg=green,fg=black,bold] {name} "
+
+        tab_normal   "#[fg=blue,bg=bg] {name} "
+        tab_active   "#[fg=blue,bg=black,bold] {name} "
+
+        datetime        "#[fg=blue,bg=black] {format} "
+        datetime_format " %d-%m-%Y"
+        datetime_timezone "Europe/Warsaw"
+        // first_start "true"
+        
+        command_uptime_command "bash -c \"uptime | awk -F, '{print $1,$2}' | sed 's/:/h /g;s/^.*up *//; s/ *[0-9]* user.*//;s/[0-9]$/&m/;s/ day. */d /g'\""
+        command_uptime_format "#[fg=black,bg=blue,bold]  {stdout} "
+        command_uptime_interval "60"
+      }
+    }
+    children
+  }
+}

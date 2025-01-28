@@ -20,3 +20,8 @@ fish_add_path "$HOME/.cargo/bin/"
 fnm env | source
 starship init fish | source
 zoxide init fish | source
+
+if test -e "$HOME/.tokens.fish"
+  source $HOME/.tokens.fish
+end
+
