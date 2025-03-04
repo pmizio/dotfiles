@@ -1,0 +1,11 @@
+command = /opt/homebrew/bin/fish --login --interactive
+theme = tokyonight_moon
+
+font-family = Fira Code
+font-family-bold = Fira Code Bold
+
+font-family = Symbols Nerd Font Mono
+font-size = 12
+
+shell-integration = fish
+confirm-close-surface = false

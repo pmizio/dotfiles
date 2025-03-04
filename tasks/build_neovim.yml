@@ -1,0 +1,28 @@
+---
+- name: Install Xcode tools
+  ansible.builtin.shell: |
+    xcode-select --install
+  ignore_errors: true
+- name: Install NeoVim build deps
+  community.general.homebrew:
+    name:
+      - ninja
+      - cmake
+      - gettext
+      - curl
+- name: Clone NeoVim repo
+  git:
+    repo: "https://github.com/neovim/neovim"
+    dest: "$HOME/.neovim/"
+- name: Build NeoVim
+  ansible.builtin.shell:
+    cmd: |
+      cd $HOME/.neovim/
+      rm -rf build
+      make distclean
+      make CMAKE_BUILD_TYPE=Release
+- name: Install NeoVim
+  ansible.builtin.shell:
+    cmd: |
+      cd $HOME/.neovim/
+      make CMAKE_INSTALL_PREFIX=$HOME/.local install

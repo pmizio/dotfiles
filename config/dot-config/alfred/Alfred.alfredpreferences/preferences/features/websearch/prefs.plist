@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>customSites</key>
+	<dict>
+		<key>9CDA010E-996E-4230-A335-79B105928EFF</key>
+		<dict>
+			<key>enabled</key>
+			<true/>
+			<key>keyword</key>
+			<string>ag</string>
+			<key>text</key>
+			<string>Allegro github search</string>
+			<key>url</key>
+			<string>https://github.com/allegro-internal/{query}</string>
+		</dict>
+	</dict>
+</dict>
+</plist>

@@ -22,6 +22,5 @@
   become: true
   ansible.builtin.shell:
     cmd: |
-      cd "{{lookup('env', 'HOME')}}/.neovim/"
-      make install
-      
+      cd $HOME/.neovim/
+      make CMAKE_INSTALL_PREFIX=$HOME/.local install

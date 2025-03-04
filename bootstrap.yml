@@ -12,13 +12,8 @@
     - name: Build Linux software
       include_tasks: tasks/build_linux.yml
       when: ansible_facts['distribution'] == "Ubuntu"
-    - name: Create directories
-      file:
-        path: "{{item}}"
-        state: directory
-      loop:
-        - "~/.config/kitty/"
-        - "~/.config/fish/"
-        - "~/.tmux/"
+    - name: Build NeoVim
+      include_tasks: tasks/build_neovim.yml
     - name: Setup dotfiles
-      include_tasks: tasks/dotfiles.yml
+      ansible.builtin.shell: |
+        stow -v --dotfiles --adopt -S config

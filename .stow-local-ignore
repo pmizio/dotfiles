@@ -1,0 +1,5 @@
+\.config/kitty
+\.config/zellij
+.*\.md
+\.git
+\.gitignore
