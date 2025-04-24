@@ -14,10 +14,12 @@
   git:
     repo: "https://github.com/neovim/neovim"
     dest: "$HOME/.neovim/"
+  ignore_errors: true
 - name: Build NeoVim
   ansible.builtin.shell:
     cmd: |
       cd $HOME/.neovim/
+      git pull
       rm -rf build
       make distclean
       make CMAKE_BUILD_TYPE=Release

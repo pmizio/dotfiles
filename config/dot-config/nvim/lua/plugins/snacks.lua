@@ -32,9 +32,18 @@ return {
     map("n", "<leader>h", function()
       snacks.picker.help()
     end)
-
     map("n", "<leader>go", function()
       snacks.gitbrowse.open()
     end)
+
+    local highlight_augroup =
+      vim.api.nvim_create_augroup("PmizioConfigHighlight", { clear = false })
+    vim.api.nvim_create_autocmd("FileType", {
+      pattern = { "snacks_picker_input" },
+      group = highlight_augroup,
+      callback = function()
+        vim.cmd.iabbrev("-g", "-- -g")
+      end,
+    })
   end,
 }
