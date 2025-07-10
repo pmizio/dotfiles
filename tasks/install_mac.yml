@@ -4,6 +4,7 @@
     name:
       - font-fira-code
       - font-symbols-only-nerd-font
+      - intellij-idea
 - name: Install packages from Homebrew
   community.general.homebrew:
     name:
@@ -27,6 +28,8 @@
       - alfred
       - luarocks
       - emscripten
+      - python
+      - pipx
 - name: Install Rust
   ansible.builtin.shell: |
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y

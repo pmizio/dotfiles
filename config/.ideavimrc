@@ -1,0 +1,14 @@
+let mapleader=" "
+
+set relativenumber
+set number
+set incsearch
+
+""" Plugins
+set surround
+set commentary
+set argtextobj
+set textobj-entire
+
+nmap gh <Action>(ShowHoverInfo)
+nmap <leader>f <Action>(SearchEverywhere)
