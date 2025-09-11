@@ -8,6 +8,12 @@
       - logi-options+
       - yubico-authenticator
       - karabiner-elements
+      - android-studio
+      - flipper
+      - ghostty
+      - hammerspoon
+      - podman-desktop
+      - visual-studio-code@insiders
 - name: Install packages from Homebrew
   community.general.homebrew:
     name:
