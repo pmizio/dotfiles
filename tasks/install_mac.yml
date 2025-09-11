@@ -5,6 +5,9 @@
       - font-fira-code
       - font-symbols-only-nerd-font
       - intellij-idea
+      - logi-options+
+      - yubico-authenticator
+      - karabiner-elements
 - name: Install packages from Homebrew
   community.general.homebrew:
     name:
@@ -30,6 +33,8 @@
       - emscripten
       - python
       - pipx
+      - podman
+      - tree
 - name: Install Rust
   ansible.builtin.shell: |
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y

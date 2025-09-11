@@ -26,3 +26,4 @@ if test -e "$HOME/.tokens.fish"
   source $HOME/.tokens.fish
 end
 
+fish_add_path "/Users/$USER/.mbox/mbox-cli"

@@ -25,6 +25,26 @@ return {
       group = group,
     })
 
+    vim.api.nvim_create_autocmd("CmdlineChanged", {
+      callback = function()
+        if vim.fn.getcmdtype() ~= ":" then
+          return
+        end
+
+        local line = vim.fn.getcmdline()
+        local start, _end = line:find "^Gi?t? c[bo] "
+
+        if start ~= nil then
+          local prefix = line:sub(start, _end)
+          local sufix = line:sub(_end + 1):gsub(" ", "-")
+          local position = vim.fn.getcmdpos()
+
+          vim.fn.setcmdline(prefix .. sufix, position)
+        end
+      end,
+      group = group,
+    })
+
     require("gitsigns").setup {}
 
     require("git-conflict").setup {
