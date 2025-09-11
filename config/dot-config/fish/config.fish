@@ -1,5 +1,4 @@
 set -g fish_greeting
-set -g fish_key_bindings fish_vi_key_bindings
 
 if status is-interactive
   set fish_cursor_default block
@@ -7,12 +6,6 @@ if status is-interactive
   set fish_cursor_replace_one underscore
   set fish_cursor_replace underscore
   set fish_cursor_visual block
-
-  function fish_user_key_bindings
-    # Execute this once per mode that emacs bindings should be used in
-    fish_default_key_bindings -M insert
-    fish_vi_key_bindings --no-erase insert
-  end
 end
 
 fish_add_path "$HOME/.local/bin/"
@@ -27,3 +20,7 @@ if test -e "$HOME/.tokens.fish"
 end
 
 fish_add_path "/Users/$USER/.mbox/mbox-cli"
+
+set -gx EDITOR nvim
+
+bind Ę edit_command_buffer
