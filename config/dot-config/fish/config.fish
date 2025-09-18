@@ -23,4 +23,4 @@ fish_add_path "/Users/$USER/.mbox/mbox-cli"
 
 set -gx EDITOR nvim
 
-bind Ę edit_command_buffer
+bind ctrl-x,e edit_command_buffer

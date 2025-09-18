@@ -1,5 +1,10 @@
 local set = vim.opt
 
+-- if vim.regex("truecolor\\|24bit"):match_str(vim.env.COLORTERM or "") == nil then
+--   print ">>>>>>>>>>>>>>>>>>>"
+--   vim.cmd "set notermguicolors"
+-- end
+
 set.splitbelow = false
 set.signcolumn = "yes"
 

@@ -1,0 +1,13 @@
+export EDITOR=$HOME/.local/bin/nvim
+export PATH=$HOME/.local/bin:$PATH
+eval "$(/opt/homebrew/bin/brew shellenv)"
+
+bindkey "^R" history-incremental-search-backward
+
+autoload edit-command-line
+zle -N edit-command-line
+bindkey '^Xe' edit-command-line
+
+#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
+export SDKMAN_DIR="$HOME/.sdkman"
+[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"

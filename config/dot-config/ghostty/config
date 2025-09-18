@@ -1,5 +1,6 @@
 command = /opt/homebrew/bin/fish --login --interactive
-theme = tokyonight_moon
+maximize = true
+theme = TokyoNight Moon
 
 font-family = Fira Code
 font-family-bold = Fira Code Bold
