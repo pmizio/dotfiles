@@ -1,3 +1,4 @@
+---@diagnostic disable-next-line:lowercase-global
 hs = hs
 local utils = require "utils"
 
@@ -20,10 +21,15 @@ for key, app in pairs(APPS_SHORTCUTS) do
   end)
 end
 
-local screens = hs.screen.allScreens()
-table.sort(screens, function(a, b)
-  return a:frame().x < b:frame().x
-end)
+local screens = {}
+
+local function loadScreens()
+  screens = hs.screen.allScreens()
+  table.sort(screens, function(a, b)
+    return a:frame().x < b:frame().x
+  end)
+end
+loadScreens()
 
 local keymap = { "q", "w", "e", "r", "t" }
 
@@ -64,3 +70,9 @@ end)
 hs.hotkey.bind(HYPER, "x", function()
   hs.reload()
 end)
+
+---@diagnostic disable:lowercase-global
+screensWatcher = hs.screen.watcher.new(loadScreens)
+
+screensWatcher:start() -- luacheck: ignore
+---@diagnostic enable

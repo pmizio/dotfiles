@@ -14,6 +14,7 @@
       - hammerspoon
       - podman-desktop
       - visual-studio-code@insiders
+      - keycastr
 - name: Install packages from Homebrew
   community.general.homebrew:
     name:
