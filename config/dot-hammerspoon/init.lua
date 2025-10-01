@@ -21,32 +21,33 @@ for key, app in pairs(APPS_SHORTCUTS) do
   end)
 end
 
-local screens = {}
+local keymap = { "q", "w", "e", "r", "t" }
 
 local function loadScreens()
-  screens = hs.screen.allScreens()
+  print "Loading screens"
+  local screens = hs.screen.allScreens()
   table.sort(screens, function(a, b)
     return a:frame().x < b:frame().x
   end)
-end
-loadScreens()
+  print(hs.inspect(screens))
 
-local keymap = { "q", "w", "e", "r", "t" }
+  for indexKey, screen in ipairs(screens) do
+    hs.hotkey.bind(HYPER, keymap[indexKey], function()
+      local win = hs.window.focusedWindow()
+      if not win then
+        return
+      end
+      local screenFrame = win:screen():frame()
 
-for indexKey, screen in ipairs(screens) do
-  hs.hotkey.bind(HYPER, keymap[indexKey], function()
-    local win = hs.window.focusedWindow()
-    if not win then
-      return
-    end
-    local screenFrame = win:screen():frame()
-
-    utils.disableResizeAnimation(function()
-      win:moveToScreen(screen, not screenFrame:equals(win:frame()), true, 0)
+      utils.disableResizeAnimation(function()
+        win:moveToScreen(screen, not screenFrame:equals(win:frame()), true, 0)
+      end)
+      utils.moveCursorToFocusedWindow()
     end)
-    utils.moveCursorToFocusedWindow()
-  end)
+  end
 end
+
+loadScreens()
 
 hs.hotkey.bind(HYPER, "k", function()
   local win = hs.window.focusedWindow()
