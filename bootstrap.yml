@@ -16,4 +16,4 @@
       include_tasks: tasks/build_neovim.yml
     - name: Setup dotfiles
       ansible.builtin.shell: |
-        stow -v --dotfiles --adopt -S config
+        stow -v --dotfiles -S config

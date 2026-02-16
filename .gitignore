@@ -1,3 +1,5 @@
+**/.DS_Store
 sdk.fish
 config/.hammerspoon/Spoons/
 config/dot-config/karabiner/automatic_backups/
+config/dot-config/zsh/*zcompdump
