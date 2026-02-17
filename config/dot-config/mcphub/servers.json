@@ -1,3 +1,11 @@
 {
-  "mcpServers": {}
+  "mcpServers": {
+    "opbox": {
+      "autoApprove": [
+        "metrum_css_summary"
+      ],
+      "type": "http",
+      "url": "https://opbox-mcp.allegrogroup.com/mcp"
+    }
+  }
 }

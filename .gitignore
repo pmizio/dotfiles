@@ -1,5 +1,12 @@
-**/.DS_Store
-sdk.fish
+.zcomet
+*zcompdump*
+*zcompcache*
+.zsh_history
+.zsh_sessions
+*.zwc
+*.zwc.old
+*.log
+.DS_Store
 config/.hammerspoon/Spoons/
 config/dot-config/karabiner/automatic_backups/
-config/dot-config/zsh/*zcompdump
+

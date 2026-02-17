@@ -1,20 +1,19 @@
 return {
   "williamboman/mason.nvim",
   dependencies = {
+    "neovim/nvim-lspconfig",
     "WhoIsSethDaniel/mason-tool-installer.nvim",
     "williamboman/mason-lspconfig.nvim",
-    "neovim/nvim-lspconfig",
     "saghen/blink.cmp",
     "j-hui/fidget.nvim",
     { "folke/lazydev.nvim", ft = "lua" },
     "folke/snacks.nvim",
-    { dir = "~/Documents/GitHub/vscode-allegro-metrum", ft = { "css", "postcss" } },
+    { dir = "~/Documents/GitHub/vscode-allegro-metrum", ft = { "css", "postcss" }, optional = true },
   },
   event = "BufReadPre",
   cmd = "Mason",
   config = function()
     local snacks = require "snacks"
-    local mason_lspconfig = require "mason-lspconfig"
     local mason_tools = require "mason-tool-installer"
     local ok, metrum = pcall(require, "allegro-metrum")
     local ensure_installed = {
@@ -37,26 +36,24 @@ return {
       },
     }
 
-    mason_lspconfig.setup()
-
     if ok then
       metrum.setup {}
     end
 
     local capabilities = require("blink.cmp").get_lsp_capabilities()
-    local server_configs = {
-      stylelint_lsp = {
-        filetypes = { "css", "less", "postcss" },
-      },
+
+    vim.lsp.config("*", {
+      capabilities = capabilities,
+    })
+
+    vim.lsp.config("stylelint_lsp", {
+      capabilities = capabilities,
+      filetypes = { "css", "less", "postcss" },
+    })
+
+    require("mason-lspconfig").setup {
+      automatic_enable = true,
     }
-
-    for _, name in pairs(mason_lspconfig.get_installed_servers()) do
-      local config = vim.tbl_deep_extend("force", {
-        capabilities = capabilities,
-      }, server_configs[name] or {})
-
-      require("lspconfig")[name].setup(config)
-    end
 
     require("fidget").setup {}
     require "pmizio.diagnostic"

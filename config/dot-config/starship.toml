@@ -13,3 +13,6 @@ disabled = true
 
 [git_branch]
 symbol = " "
+
+[bun]
+disabled = true
