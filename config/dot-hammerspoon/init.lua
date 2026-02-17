@@ -2,6 +2,8 @@
 hs = hs
 local utils = require "utils"
 
+require "amphetamine"
+
 local MEH = { "shift", "ctrl", "alt" }
 local HYPER = { "cmd", table.unpack(MEH) }
 

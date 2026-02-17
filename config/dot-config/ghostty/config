@@ -1,6 +1,5 @@
-command = /opt/homebrew/bin/fish --login --interactive
 maximize = true
-theme = TokyoNight Moon
+theme = Catppuccin Mocha
 
 font-family = Fira Code
 font-family-bold = Fira Code Bold
@@ -8,5 +7,8 @@ font-family-bold = Fira Code Bold
 font-family = Symbols Nerd Font Mono
 font-size = 12
 
-shell-integration = fish
 confirm-close-surface = false
+
+keybind = alt+f=esc:f
+keybind = alt+b=esc:b
+keybind = alt+d=esc:d
