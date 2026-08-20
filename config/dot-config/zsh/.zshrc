@@ -112,3 +112,7 @@ update_nvim() {
 
   popd || return 1
 }
+
+base64_decode() {
+	echo $1 | base64 --decode
+}
