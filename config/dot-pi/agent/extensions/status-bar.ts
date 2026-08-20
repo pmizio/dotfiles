@@ -254,7 +254,11 @@ export default function (pi: ExtensionAPI) {
 						? theme.fg("muted", `${OPENAI_GLYPH} weekly: —`)
 						: theme.fg("muted", `${OPENAI_GLYPH} `) +
 							theme.fg(usageColor(plan), weeklyText);
-					const rightSection = [contextTokenSection, usageSection].join(separator);
+					const planStatus = footerData.getExtensionStatuses().get("plan-mode");
+					const planStatusSection = planStatus ? theme.fg("warning", planStatus) : undefined;
+					const rightSection = [planStatusSection, contextTokenSection, usageSection]
+						.filter((section): section is string => section !== undefined)
+						.join(separator);
 					const sideMargin = width >= 3 ? 1 : 0;
 					const contentWidth = width - sideMargin * 2;
 					const alignRight = (leftSection: string): string | undefined => {

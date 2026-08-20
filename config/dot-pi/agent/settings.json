@@ -8,6 +8,8 @@
   "packages": [
     "npm:@gotgenes/pi-permission-system",
     "npm:pi-web-access",
-    "npm:pi-catppuccin"
+    "npm:pi-catppuccin",
+    "npm:@narumitw/pi-plan-mode",
+    "npm:pi-notify"
   ]
 }
