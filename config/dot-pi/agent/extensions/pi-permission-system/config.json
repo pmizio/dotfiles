@@ -1,0 +1,17 @@
+{
+  "$schema": "https://raw.githubusercontent.com/gotgenes/pi-packages/main/packages/pi-permission-system/schemas/permissions.schema.json",
+  "yoloMode": false,
+  "permission": {
+    "*": "allow",
+    "bash": {
+      "*": "allow"
+    },
+    "external_directory": {
+      "*": "ask",
+      "~/.pi/agent": "allow",
+      "~/.pi/agent/*": "allow",
+      "/tmp": "allow",
+      "/tmp/*": "allow"
+    }
+  }
+}
