@@ -13,8 +13,23 @@ type UsageWindow = {
 	windowSeconds?: number;
 };
 
+type CreditLimit = {
+	used?: string;
+	limit?: string;
+	usedPercent?: number;
+};
+
+type Credits = {
+	hasCredits: boolean;
+	unlimited: boolean;
+	balance?: string;
+};
+
 type CodexUsage = {
 	plan?: UsageWindow;
+	creditLimit?: CreditLimit;
+	credits?: Credits;
+	enterprise?: boolean;
 	error?: string;
 };
 
@@ -28,6 +43,12 @@ function asNumber(value: unknown): number | undefined {
 		const parsed = Number(value);
 		if (Number.isFinite(parsed)) return parsed;
 	}
+	return undefined;
+}
+
+function asString(value: unknown): string | undefined {
+	if (typeof value === "string" && value.trim() !== "") return value.trim();
+	if (typeof value === "number" && Number.isFinite(value)) return `${value}`;
 	return undefined;
 }
 
@@ -53,21 +74,38 @@ function getCodexAccountId(token: string): string | undefined {
 	return typeof accountId === "string" && accountId.length > 0 ? accountId : undefined;
 }
 
+function getCodexPlanType(token: string): string | undefined {
+	const payload = parseJwtPayload(token);
+	const auth = asRecord(payload?.["https://api.openai.com/auth"]);
+	return asString(auth?.chatgpt_plan_type);
+}
+
+function isEnterprisePlan(planType: string | undefined): boolean {
+	const normalized = planType?.trim().toLowerCase().replace(/[\s-]+/g, "_");
+	return (
+		normalized === "enterprise" ||
+		normalized === "ent26" ||
+		normalized?.startsWith("enterprise_") === true ||
+		normalized === "business" ||
+		normalized?.startsWith("self_serve_business_") === true
+	);
+}
+
 function parseWindow(value: unknown): UsageWindow | undefined {
 	const window = asRecord(value);
 	if (!window) return undefined;
 
+	const percentLeft = asNumber(window.percent_left);
 	const usedPercent =
 		asNumber(window.used_percent) ??
 		asNumber(window.usedPercent) ??
-		(asNumber(window.percent_left) !== undefined ? 100 - (asNumber(window.percent_left) as number) : undefined);
+		(percentLeft !== undefined ? 100 - percentLeft : undefined);
 	if (usedPercent === undefined) return undefined;
 
+	const windowDurationMins = asNumber(window.window_duration_mins);
 	const windowSeconds =
 		asNumber(window.limit_window_seconds) ??
-		(asNumber(window.window_duration_mins) !== undefined
-				? (asNumber(window.window_duration_mins) as number) * 60
-				: undefined);
+		(windowDurationMins !== undefined ? windowDurationMins * 60 : undefined);
 
 	return {
 		usedPercent: Math.max(0, Math.min(100, usedPercent)),
@@ -75,30 +113,111 @@ function parseWindow(value: unknown): UsageWindow | undefined {
 	};
 }
 
-function parseCodexUsage(payload: unknown): CodexUsage {
-	const root = asRecord(payload);
-	const rateLimit = asRecord(root?.rate_limit) ?? asRecord(root?.rate_limits);
-	if (!rateLimit) return { error: "unavailable" };
+function parseCreditLimit(value: unknown): CreditLimit | undefined {
+	const limit = asRecord(value);
+	if (!limit) return undefined;
 
-	const candidates = [
-		parseWindow(rateLimit.primary_window),
-		parseWindow(rateLimit.secondary_window),
-		parseWindow(rateLimit.primary),
-		parseWindow(rateLimit.secondary),
-		parseWindow(rateLimit.five_hour),
-		parseWindow(rateLimit.weekly),
-	].filter((window): window is UsageWindow => window !== undefined);
-	if (candidates.length === 0) return { error: "unavailable" };
+	const used = asString(limit.used);
+	const total = asString(limit.limit);
+	if (used === undefined && total === undefined) return undefined;
+
+	const remainingPercent = asNumber(limit.remaining_percent) ?? asNumber(limit.remainingPercent);
+	const usedPercent =
+		asNumber(limit.used_percent) ??
+		asNumber(limit.usedPercent) ??
+		(remainingPercent !== undefined ? 100 - remainingPercent : undefined);
+	return {
+		...(used !== undefined ? { used } : {}),
+		...(total !== undefined ? { limit: total } : {}),
+		...(usedPercent !== undefined ? { usedPercent: Math.max(0, Math.min(100, usedPercent)) } : {}),
+	};
+}
+
+function parseCredits(value: unknown): Credits | undefined {
+	const credits = asRecord(value);
+	if (!credits) return undefined;
+
+	const hasCredits = typeof credits.has_credits === "boolean" ? credits.has_credits : undefined;
+	const unlimited = typeof credits.unlimited === "boolean" ? credits.unlimited : undefined;
+	const balance = asString(credits.balance);
+	if (hasCredits === undefined && unlimited === undefined && balance === undefined) return undefined;
+
+	return {
+		hasCredits: hasCredits ?? balance !== undefined,
+		unlimited: unlimited ?? false,
+		...(balance !== undefined ? { balance } : {}),
+	};
+}
+
+function parseCodexUsage(payload: unknown, fallbackPlanType?: string): CodexUsage {
+	const root = asRecord(payload);
+	const planType = asString(root?.plan_type) ?? asString(root?.planType) ?? fallbackPlanType;
+	const enterprise = isEnterprisePlan(planType) || isEnterprisePlan(fallbackPlanType);
+	const rateLimit = asRecord(root?.rate_limit) ?? asRecord(root?.rate_limits);
+	const spendControl = asRecord(root?.spend_control) ?? asRecord(root?.spendControl);
+	const creditLimit =
+		parseCreditLimit(spendControl?.individual_limit) ??
+		parseCreditLimit(spendControl?.individualLimit);
+	const credits = parseCredits(root?.credits);
+
+	const candidates = rateLimit
+		? [
+				parseWindow(rateLimit.primary_window),
+				parseWindow(rateLimit.secondary_window),
+				parseWindow(rateLimit.primary),
+				parseWindow(rateLimit.secondary),
+				parseWindow(rateLimit.five_hour),
+				parseWindow(rateLimit.weekly),
+			].filter((window): window is UsageWindow => window !== undefined)
+		: [];
+	if (candidates.length === 0 && creditLimit === undefined && credits === undefined) {
+		return { enterprise, error: "unavailable" };
+	}
 
 	// Keep only the longest returned window, which is the weekly plan window here.
 	const sorted = [...candidates].sort(
 		(a, b) => (a.windowSeconds ?? Number.POSITIVE_INFINITY) - (b.windowSeconds ?? Number.POSITIVE_INFINITY),
 	);
-	return { plan: sorted[sorted.length - 1] };
+	return {
+		...(sorted.length > 0 ? { plan: sorted[sorted.length - 1] } : {}),
+		...(creditLimit !== undefined ? { creditLimit } : {}),
+		...(credits !== undefined ? { credits } : {}),
+		enterprise,
+	};
 }
 
 function formatPercent(window: UsageWindow | undefined): string {
 	return window ? `${Math.round(window.usedPercent)}%` : "—";
+}
+
+function formatCreditAmount(value: string | undefined): string | undefined {
+	if (value === undefined) return undefined;
+	const parsed = Number(value);
+	return Number.isFinite(parsed)
+		? parsed.toLocaleString("en-US", { maximumFractionDigits: 2 })
+		: value;
+}
+
+function formatCreditLimit(limit: CreditLimit | undefined, credits: Credits | undefined): string {
+	const used = formatCreditAmount(limit?.used);
+	const total = formatCreditAmount(limit?.limit);
+	if (used && total) return `${used}/${total}`;
+	if (total) return total;
+	if (used) return used;
+	if (credits?.unlimited) return "unlimited";
+
+	const balance = formatCreditAmount(credits?.balance);
+	if (balance) return balance;
+	return credits?.hasCredits ? "available" : "—";
+}
+
+function creditUsageColor(
+	limit: CreditLimit | undefined,
+	credits: Credits | undefined,
+): "success" | "warning" | "error" | "muted" {
+	if (limit?.usedPercent !== undefined) return usageColor({ usedPercent: limit.usedPercent });
+	if (limit || credits?.unlimited || credits?.hasCredits) return "success";
+	return "muted";
 }
 
 function compactHome(path: string): string {
@@ -153,6 +272,7 @@ export default function (pi: ExtensionAPI) {
 		refreshController = new AbortController();
 		const signal = refreshController.signal;
 		refreshPromise = (async () => {
+			let enterprise = false;
 			try {
 				const auth = await ctx.modelRegistry.getProviderAuth("openai-codex");
 				const token = auth?.auth.apiKey;
@@ -161,9 +281,11 @@ export default function (pi: ExtensionAPI) {
 					return;
 				}
 
+				const planType = getCodexPlanType(token);
+				enterprise = isEnterprisePlan(planType);
 				const accountId = getCodexAccountId(token);
 				if (!accountId) {
-					usage = { error: "account unavailable" };
+					usage = { enterprise, error: "account unavailable" };
 					return;
 				}
 
@@ -181,10 +303,10 @@ export default function (pi: ExtensionAPI) {
 				});
 				if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
-				usage = parseCodexUsage(await response.json());
+				usage = parseCodexUsage(await response.json(), planType);
 			} catch (error) {
 				if (signal.aborted) return;
-				usage = { error: error instanceof Error ? error.message : "unavailable" };
+				usage = { enterprise, error: error instanceof Error ? error.message : "unavailable" };
 			} finally {
 				refreshPromise = undefined;
 				requestRender?.();
@@ -220,7 +342,15 @@ export default function (pi: ExtensionAPI) {
 					const branch = rawBranch && rawBranch.length > 24 ? `…${rawBranch.slice(-23)}` : rawBranch;
 
 					const plan = usage.plan;
+					const creditLimit = usage.creditLimit;
+					const showCreditLimit =
+						creditLimit !== undefined || (usage.enterprise === true && usage.credits !== undefined);
 					const weeklyText = `weekly: ${formatPercent(plan)}`;
+					const creditsText = `credits: ${formatCreditLimit(creditLimit, usage.credits)}`;
+					const quotaText = showCreditLimit ? creditsText : weeklyText;
+					const quotaColor = showCreditLimit
+						? creditUsageColor(creditLimit, usage.credits)
+						: usageColor(plan);
 					const contextPercent = ctx.getContextUsage()?.percent ?? null;
 					const tokenTotals = getTokenTotals(ctx);
 					const barWidth = 8;
@@ -251,9 +381,8 @@ export default function (pi: ExtensionAPI) {
 					const pathSection = theme.fg("text", cwd) + branchSection;
 					const compactPathSection = theme.fg("text", shortCwd) + compactBranchSection;
 					const usageSection = usage.error
-						? theme.fg("muted", `${OPENAI_GLYPH} weekly: —`)
-						: theme.fg("muted", `${OPENAI_GLYPH} `) +
-							theme.fg(usageColor(plan), weeklyText);
+						? theme.fg("muted", `${OPENAI_GLYPH} ${showCreditLimit ? "credits: —" : "weekly: —"}`)
+						: theme.fg("muted", `${OPENAI_GLYPH} `) + theme.fg(quotaColor, quotaText);
 					const planStatus = footerData.getExtensionStatuses().get("plan-mode");
 					const planStatusSection = planStatus ? theme.fg("warning", planStatus) : undefined;
 					const rightSection = [planStatusSection, contextTokenSection, usageSection]

@@ -11,7 +11,17 @@
       "~/.pi/agent": "allow",
       "~/.pi/agent/*": "allow",
       "/tmp": "allow",
-      "/tmp/*": "allow"
+      "/tmp/*": "allow",
+      "/private/tmp": "allow",
+      "/private/tmp/*": "allow",
+      "/var/tmp": "allow",
+      "/var/tmp/*": "allow",
+      "/private/var/tmp": "allow",
+      "/private/var/tmp/*": "allow",
+      "/var/folders": "allow",
+      "/var/folders/*": "allow",
+      "/private/var/folders": "allow",
+      "/private/var/folders/*": "allow"
     }
   }
 }
