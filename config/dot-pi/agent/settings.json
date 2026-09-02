@@ -5,13 +5,15 @@
   "defaultModel": "gpt-5.6-luna",
   "defaultThinkingLevel": "max",
   "tuiMode": "regular",
+  "skills": [
+    "~/Documents/Allegro/ads-mint-docs/SKILLS/"
+  ],
   "packages": [
     "npm:@gotgenes/pi-permission-system",
     "npm:pi-web-access",
     "npm:pi-catppuccin",
     "npm:@narumitw/pi-plan-mode",
     "npm:pi-notify",
-    "npm:@pi-plugins/usage",
     "npm:pi-subagents",
     "npm:pi-lens"
   ],

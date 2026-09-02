@@ -1,6 +1,9 @@
 {
   "$schema": "https://raw.githubusercontent.com/gotgenes/pi-packages/main/packages/pi-permission-system/schemas/permissions.schema.json",
   "yoloMode": false,
+  "piInfrastructureReadPaths": [
+    "~/Documents/Allegro/ads-mint-docs/SKILLS"
+  ],
   "permission": {
     "*": "allow",
     "bash": {
@@ -10,6 +13,10 @@
       "*": "ask",
       "~/.pi/agent": "allow",
       "~/.pi/agent/*": "allow",
+      "~/.jira_api_token": "allow",
+      "~/.slack_api_token": "allow",
+      "~/.confluence_api_token": "allow",
+      "~/.google_docs_token": "allow",
       "/tmp": "allow",
       "/tmp/*": "allow",
       "/private/tmp": "allow",
